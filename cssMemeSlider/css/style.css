@@ -1,0 +1,311 @@
+/**
+  Нормализация блочной модели
+ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/**
+       Убираем внутренние отступы слева тегам списков,
+       у которых есть атрибут class
+      */
+:where(ul, ol):where([class]) {
+    padding-left: 0;
+}
+
+/**
+       Убираем внешние отступы body и двум другим тегам,
+       у которых есть атрибут class
+      */
+body,
+:where(blockquote, figure):where([class]) {
+    margin: 0;
+}
+
+/**
+       Убираем внешние отступы вертикали нужным тегам,
+       у которых есть атрибут class
+      */
+:where(h1, h2, h3, h4, h5, h6, p, ul, ol, dl):where([class]) {
+    margin-block: 0;
+}
+
+:where(dd[class]) {
+    margin-left: 0;
+}
+
+:where(fieldset[class]) {
+    margin-left: 0;
+    padding: 0;
+    border: none;
+}
+
+/**
+       Убираем стандартный маркер маркированному списку,
+       у которого есть атрибут class
+      */
+:where(ul[class]) {
+    list-style: none;
+}
+
+/**
+       Обнуляем вертикальные внешние отступы параграфа,
+       объявляем локальную переменную для внешнего отступа вниз,
+       чтобы избежать взаимодействие с более сложным селектором
+      */
+p {
+    --paragraphMarginBottom: 1.5em;
+
+    margin-block: 0;
+}
+
+/**
+       Внешний отступ вниз для параграфа без атрибута class,
+       который расположен не последним среди своих соседних элементов
+      */
+p:where(:not([class]):not(:last-child)) {
+    margin-bottom: var(--paragraphMarginBottom);
+}
+
+/**
+       Упрощаем работу с изображениями
+      */
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/**
+       Наследуем свойства шрифт для полей ввода
+      */
+input,
+textarea,
+select,
+button {
+    font: inherit;
+}
+
+html {
+    /**
+         Пригодится в большинстве ситуаций
+         (когда, например, нужно будет "прижать" футер к низу сайта)
+        */
+    height: 100%;
+}
+
+/**
+       Плавный скролл
+      */
+html,
+:has(:target) {
+    scroll-behavior: smooth;
+}
+
+body {
+    /**
+         Пригодится в большинстве ситуаций
+         (когда, например, нужно будет "прижать" футер к низу сайта)
+        */
+    min-height: 100%;
+    /**
+         Унифицированный интерлиньяж
+        */
+    line-height: 1.5;
+}
+
+/**
+       Приводим к единому цвету svg-элементы
+      */
+svg *[fill] {
+    fill: currentColor;
+}
+
+svg *[stroke] {
+    stroke: currentColor;
+}
+
+/**
+       Чиним баг задержки смены цвета при взаимодействии с svg-элементами
+      */
+svg * {
+    transition-property: fill, stroke;
+}
+
+/**
+       Удаляем все анимации и переходы для людей,
+       которые предпочитают их не использовать
+      */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+:root {
+    --color-light: #ffffff;
+    --color-blue: #6ea1ee;
+    --color-dark: #2b2b2b;
+
+    --border-radius: 0.7em;
+
+    --second-family: "Arial", sans-serif;
+
+    --container-width: 80em;
+    --container-padding-x: 2.7em;
+
+    --transition-duration: 0.2s;
+}
+
+body {
+    font-family: var(--second-family);
+    font-weight: 400;
+    /* font-size: 15px; */
+    font-size: 100%;
+    color: var(--color-light);
+    background-color: var(--color-dark);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 1.5vw;
+    max-width: calc(var(--container-width) + var(--container-padding-x) * 2);
+    margin-inline: auto;
+    padding-inline: var(--container-padding-x);
+    min-height: 100vh;
+}
+
+.slider {
+    /*450px, ......., 700px*/
+    width: clamp(30em, 80%, 46.7em);
+    /*253px, ......, 400px*/
+    height: clamp(16.9em, 80%, 26.7em);
+    overflow: hidden;
+    border-radius: var(--border-radius);
+    box-shadow: #8989ff40 0px 50px 100px -20px, #ffffff4d 0px 30px 60px -30px;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+.slides {
+    display: flex;
+    width: 400%;
+    height: 100%;
+}
+
+.slide {
+    width: 25%;
+    transition: all 0.6s;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+}
+
+.under-info {
+    display: flex;
+    justify-content: space-between;
+    width: clamp(26.7em, 80%, 46.7em);
+}
+
+.navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5em;
+}
+
+.bar {
+    width: 0.7em;
+    aspect-ratio: 1;
+    cursor: pointer;
+    border: 15px solid #0099ff00;
+    border-radius: 50%;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    background-clip: padding-box;
+    box-sizing: content-box;
+    background-color: var(--color-blue);
+}
+
+#sl1:checked ~ .under-info .navigation .bar:nth-child(1) {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 2px var(--color-blue);
+}
+
+.bar:hover {
+    background-color: var(--color-light);
+}
+
+.bar:active {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 2px var(--color-blue);
+}
+
+.bar:focus {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 2px var(--color-blue);
+}
+
+.bar:focus-visible {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 2px var(--color-blue);
+    outline: none;
+}
+
+.bar:focus:hover {
+    box-shadow: inset 0 0 0 2px var(--color-light);
+}
+
+.slider-text {
+    /* width: clamp(10em, 20vw, 14.4em); */
+    width: clamp(10em, 80%, 30.4em);
+    overflow: hidden;
+}
+
+.titles {
+    display: flex;
+    width: 402%;
+    height: 100%;
+}
+
+.slide p {
+    height: 100%;
+    white-space: normal;
+    align-content: center;
+}
+
+#sl1:checked ~ .slider .slides .slide1,
+#sl1:checked ~ .under-info .slider-text .titles .text1 {
+    margin-left: 0;
+}
+
+#sl2:checked ~ .slider .slides .slide1,
+#sl2:checked ~ .under-info .slider-text .titles .text1 {
+    margin-left: -25%;
+}
+
+#sl3:checked ~ .slider .slides .slide1,
+#sl3:checked ~ .under-info .slider-text .titles .text1 {
+    margin-left: -50%;
+}
+
+#sl4:checked ~ .slider .slides .slide1,
+#sl4:checked ~ .under-info .slider-text .titles .text1 {
+    margin-left: -75%;
+}
+
+@media (max-width: 670px) {
+    .under-info {
+        flex-direction: column-reverse;
+    }
+}
